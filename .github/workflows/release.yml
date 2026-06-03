@@ -240,6 +240,76 @@ jobs:
             ${{ matrix.artifact_name }}.zip
           retention-days: 7
 
+  # Android shared libraries for Flutter jniLibs (Release assets native-android*).
+  build-android-native:
+    name: Build Android native libs (all ABIs)
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          targets: >-
+            aarch64-linux-android,
+            armv7-linux-androideabi,
+            x86_64-linux-android,
+            i686-linux-android
+
+      - name: Set up NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26d
+
+      - name: Cache
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          key: android-all-abis
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Build cdylib (arm64-v8a, armeabi-v7a, x86_64, x86)
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: >-
+          cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 -t x86
+          build --release --lib
+
+      - name: Package
+        run: |
+          set -euo pipefail
+          declare -A targets=(
+            [arm64-v8a]=aarch64-linux-android
+            [armeabi-v7a]=armv7-linux-androideabi
+            [x86_64]=x86_64-linux-android
+            [x86]=i686-linux-android
+          )
+          mkdir -p staging/jniLibs
+          for abi in "${!targets[@]}"; do
+            rust_target="${targets[$abi]}"
+            mkdir -p "staging/jniLibs/${abi}"
+            cp "target/${rust_target}/release/liboffice_oxide.so" "staging/jniLibs/${abi}/"
+            single="staging-single-${abi}"
+            mkdir -p "${single}/jniLibs/${abi}"
+            cp "target/${rust_target}/release/liboffice_oxide.so" "${single}/jniLibs/${abi}/"
+            tar -czf "native-android-${abi}.tar.gz" -C "${single}" .
+          done
+          tar -czf native-android.tar.gz -C staging .
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-android
+          path: |
+            native-android.tar.gz
+            native-android-arm64-v8a.tar.gz
+            native-android-armeabi-v7a.tar.gz
+            native-android-x86_64.tar.gz
+            native-android-x86.tar.gz
+          retention-days: 7
+
   # Test Go binding against the monorepo's freshly built static library
   test-go:
     name: Test Go binding
@@ -270,6 +340,28 @@ jobs:
       - run: dotnet test csharp/OfficeOxide.Tests/OfficeOxide.Tests.csproj
         env:
           LD_LIBRARY_PATH: ${{ github.workspace }}/target/release
+
+  # Test Dart / Flutter FFI binding
+  test-dart:
+    name: Test Dart binding
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      - uses: subosito/flutter-action@e2a2ebd862d9b76376ae95c44f9cdadb02d76a9a # v2.21.0
+        with:
+          channel: stable
+      - run: cargo build --release --lib
+      - name: Dart test
+        working-directory: dart
+        env:
+          OFFICE_OXIDE_LIB: ${{ github.workspace }}/target/release/liboffice_oxide.so
+        run: |
+          dart pub get
+          dart analyze --fatal-infos
+          dart test
+          dart run examples/01_extract.dart
 
   # Test Node native binding (koffi)
   test-node-native:
@@ -684,6 +776,7 @@ jobs:
       - build-python-wheels
       - build-wasm
       - build-native-libs
+      - build-android-native
       - verify-python-wheel
       - verify-wasm
       - verify-node-native

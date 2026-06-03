@@ -40,6 +40,9 @@ sed -i.bak -E "s|<Version>[^<]+</Version>|<Version>${NEW}</Version>|" \
 sed -i.bak -E "s/(const defaultVersion = )\"[^\"]+\"/\1\"${NEW}\"/" \
   go/cmd/install/main.go
 
+# Dart pubspec
+sed -i.bak -E "s/^version: .*/version: ${NEW}/" dart/pubspec.yaml
+
 # README snippets
 sed -i.bak -E "s/(office_oxide = )\"[^\"]+\"/\1\"${NEW}\"/g" README.md docs/getting-started-rust.md
 

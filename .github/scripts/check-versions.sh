@@ -12,6 +12,7 @@ CSHARP=$(grep '<Version>' csharp/OfficeOxide/OfficeOxide.csproj | head -1 \
   | sed -E 's|.*<Version>(.*)</Version>.*|\1|')
 GO=$(grep 'const defaultVersion' go/cmd/install/main.go \
   | sed -E 's/.*"(.*)".*/\1/')
+DART=$(grep '^version:' dart/pubspec.yaml | head -1 | sed -E 's/^version: *//')
 
 echo "Cargo.toml             ${CARGO}"
 echo "pyproject.toml         ${PY}"
@@ -19,9 +20,10 @@ echo "wasm-pkg/package.json  ${WASM}"
 echo "js/package.json        ${JS}"
 echo "csharp .csproj         ${CSHARP}"
 echo "go/cmd/install         ${GO}"
+echo "dart/pubspec.yaml      ${DART}"
 
 fail=0
-for v in "${PY}" "${WASM}" "${JS}" "${CSHARP}" "${GO}"; do
+for v in "${PY}" "${WASM}" "${JS}" "${CSHARP}" "${GO}" "${DART}"; do
   if [ "${CARGO}" != "${v}" ]; then
     echo "FAIL: version drift — Cargo.toml=${CARGO} vs ${v}" >&2
     fail=1

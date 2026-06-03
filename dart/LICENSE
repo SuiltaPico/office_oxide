@@ -1,0 +1,7 @@
+MIT OR Apache-2.0
+
+Dart binding sources in this directory are licensed under the same terms as
+the office_oxide project. See ../LICENSE-MIT and ../LICENSE-APACHE.
+
+The `office_oxide` native libraries are separate binaries built from the Rust
+crate; their license is also MIT OR Apache-2.0.

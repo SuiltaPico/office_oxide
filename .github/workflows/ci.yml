@@ -198,7 +198,7 @@ jobs:
         if: matrix.features == ''
 
   # Build the cdylib once per OS and upload as an artifact. Downstream
-  # binding jobs (go, csharp, node-native) consume this prebuilt lib
+  # binding jobs (go, csharp, node-native, dart) consume this prebuilt lib
   # instead of recompiling. The Rust crate is the source of truth; the
   # bindings are thin wrappers, so one release build per platform suffices.
   build-lib:
@@ -244,6 +244,54 @@ jobs:
             target/release/office_oxide.dll
             target/release/office_oxide.lib
             target/release/liboffice_oxide.a
+
+  # Android cdylib (all Flutter ABIs) — matches release.yml native-android* assets.
+  build-android-lib:
+    name: Build Android cdylib (all ABIs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          targets: >-
+            aarch64-linux-android,
+            armv7-linux-androideabi,
+            x86_64-linux-android,
+            i686-linux-android
+
+      - name: Set up NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26d
+
+      - name: Cache
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          key: build-android-all
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Build cdylib (arm64-v8a, armeabi-v7a, x86_64, x86)
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: >-
+          cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 -t x86
+          build --release --lib
+
+      - name: Upload Android native lib artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: native-android
+          retention-days: 1
+          path: |
+            target/aarch64-linux-android/release/liboffice_oxide.so
+            target/armv7-linux-androideabi/release/liboffice_oxide.so
+            target/x86_64-linux-android/release/liboffice_oxide.so
+            target/i686-linux-android/release/liboffice_oxide.so
 
   # Python bindings test
   python:
@@ -446,6 +494,60 @@ jobs:
           node examples/javascript/01_extract.mjs
           node examples/javascript/02_create_from_markdown.mjs
           node examples/javascript/03_edit.mjs
+
+  # Dart / Flutter FFI — reuses the prebuilt cdylib (OFFICE_OXIDE_LIB).
+  dart:
+    name: Dart Bindings (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: [build-lib]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - uses: subosito/flutter-action@e2a2ebd862d9b76376ae95c44f9cdadb02d76a9a # v2.21.0
+        with:
+          channel: stable
+          cache: true
+          cache-key: flutter-dart-${{ matrix.os }}
+
+      - name: Download cdylib artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: native-lib-${{ matrix.os }}
+          path: target/release
+
+      - name: Resolve cdylib path
+        id: lib
+        shell: bash
+        run: |
+          case "${{ runner.os }}" in
+            Linux)   echo "path=${{ github.workspace }}/target/release/liboffice_oxide.so" >> "$GITHUB_OUTPUT";;
+            macOS)   echo "path=${{ github.workspace }}/target/release/liboffice_oxide.dylib" >> "$GITHUB_OUTPUT";;
+            Windows) echo "path=${{ github.workspace }}/target/release/office_oxide.dll" >> "$GITHUB_OUTPUT";;
+          esac
+
+      - name: Dart pub get
+        working-directory: dart
+        run: dart pub get
+
+      - name: Dart analyze
+        working-directory: dart
+        run: dart analyze --fatal-infos
+
+      - name: Dart test
+        working-directory: dart
+        env:
+          OFFICE_OXIDE_LIB: ${{ steps.lib.outputs.path }}
+        run: dart test
+
+      - name: Run Dart examples
+        working-directory: dart
+        env:
+          OFFICE_OXIDE_LIB: ${{ steps.lib.outputs.path }}
+        run: dart run examples/01_extract.dart
 
   # WASM build check
   wasm-build:

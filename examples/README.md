@@ -7,14 +7,14 @@ unmodified in CI without external fixture files.
 
 ## Numbered examples (self-contained, run in CI)
 
-| # | Scenario | Rust | Python | Go | JS | C# |
-|---|---|---|---|---|---|---|
-| 01 | Extract text, Markdown, IR | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 02 | Create documents | Rich DocxWriter / XlsxWriter / PptxWriter | create_from_markdown | create_from_markdown | create_from_markdown | create_from_markdown |
-| 03 | Edit documents (replace_text, set_cell) | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 04 | XLSX formulas + cell styles | ✓ | batch demo | — | — | — |
-| 05 | Edit roundtrip | ✓ | — | — | — | — |
-| 06 | Markdown → DOCX / XLSX / PPTX | ✓ | — | — | — | — |
+| # | Scenario | Rust | Python | Go | JS | C# | Dart |
+|---|---|---|---|---|---|---|---|
+| 01 | Extract text, Markdown, IR | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 02 | Create documents | Rich DocxWriter / XlsxWriter / PptxWriter | create_from_markdown | create_from_markdown | create_from_markdown | create_from_markdown | — |
+| 03 | Edit documents (replace_text, set_cell) | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| 04 | XLSX formulas + cell styles | ✓ | batch demo | — | — | — | — |
+| 05 | Edit roundtrip | ✓ | — | — | — | — | — |
+| 06 | Markdown → DOCX / XLSX / PPTX | ✓ | — | — | — | — | — |
 
 ## Classic examples (accept a file path argument)
 
@@ -34,6 +34,7 @@ unmodified in CI without external fixture files.
 | Go | [`go/`](go/) |
 | C# / .NET | [`csharp/`](csharp/) |
 | JavaScript (native, koffi) | [`javascript/`](javascript/) |
+| Dart / Flutter (FFI) | [`dart/examples/`](../dart/examples/) |
 | Raw C FFI | [`c/`](c/) |
 
 ## Running the Rust examples

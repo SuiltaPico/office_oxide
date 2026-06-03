@@ -1,6 +1,13 @@
+> **Dart / Flutter FFI** — maintained in this fork: [`dart/`](dart/) (`office_oxide_ffi`).
+> Upstream: [yfedoseev/office_oxide](https://github.com/yfedoseev/office_oxide).
+> Unofficial binding; not affiliated with Office Oxide / Oxide (oxide.fyi).
+>
+> **本 Fork**：[SuiltaPico/office_oxide](https://github.com/SuiltaPico/office_oxide) ·
+> **上游**：[yfedoseev/office_oxide](https://github.com/yfedoseev/office_oxide)
+
 # Office Oxide — The Fastest Native Office Document Library
 
-A fast, memory-safe library for text extraction from Office documents. Rust core with **first-class bindings for Python, Go, C#/.NET, Node.js (native and WASM), and a stable C FFI**. Handles DOCX, XLSX, PPTX, DOC, XLS, and PPT. Up to 100× faster than python-docx, openpyxl, python-pptx, and xlrd. Beats python-calamine on XLSX. **100% pass rate on valid Office files** — zero failures on legitimate Word/Excel/PowerPoint documents. MIT/Apache-2.0 dual-licensed.
+A fast, memory-safe library for text extraction from Office documents. Rust core with **first-class bindings for Python, Go, C#/.NET, Node.js (native and WASM), Dart/Flutter, and a stable C FFI**. Handles DOCX, XLSX, PPTX, DOC, XLS, and PPT. Up to 100× faster than python-docx, openpyxl, python-pptx, and xlrd. Beats python-calamine on XLSX. **100% pass rate on valid Office files** — zero failures on legitimate Word/Excel/PowerPoint documents. MIT/Apache-2.0 dual-licensed.
 
 > **Scope of "fastest".** Benchmarks compare Office Oxide against other
 > native / embeddable libraries (no JVM runtime required): python-docx,
@@ -32,11 +39,12 @@ A fast, memory-safe library for text extraction from Office documents. Rust core
 | C# / .NET | `OfficeOxide` on NuGet | [`csharp/`](csharp/) | [csharp/OfficeOxide/README.md](csharp/OfficeOxide/README.md) |
 | Node.js (native) | `office-oxide` on npm | [`js/`](js/) | [js/README.md](js/README.md) |
 | Node.js / browser (WASM) | `office-oxide-wasm` on npm | [`wasm-pkg/`](wasm-pkg/) | [wasm-pkg/README.md](wasm-pkg/README.md) |
+| Dart / Flutter | `office_oxide_ffi` (path / git) | [`dart/`](dart/) | [dart/README.md](dart/README.md) |
 | C / other | header-only via FFI | [`include/office_oxide_c/`](include/office_oxide_c/) | [office_oxide.h](include/office_oxide_c/office_oxide.h) |
 | CLI | `office-oxide` binary | [`crates/office_oxide_cli/`](crates/office_oxide_cli/) | |
 | MCP server | `office-oxide-mcp` binary | [`crates/office_oxide_mcp/`](crates/office_oxide_mcp/) | |
 
-Ready-to-run demos (`extract`, `replace`, `read_xlsx`) exist for every binding under [`examples/`](examples/). Deeper language-specific guides live in [`docs/`](docs/): [Rust](docs/getting-started-rust.md) · [Python](docs/getting-started-python.md) · [Go](docs/getting-started-go.md) · [C#](docs/getting-started-csharp.md) · [JavaScript (native)](docs/getting-started-javascript.md) · [WASM](docs/getting-started-wasm.md) · [C FFI](docs/getting-started-c.md).
+Ready-to-run demos (`extract`, `replace`, `read_xlsx`) exist for every binding under [`examples/`](examples/). Deeper language-specific guides live in [`docs/`](docs/): [Rust](docs/getting-started-rust.md) · [Python](docs/getting-started-python.md) · [Go](docs/getting-started-go.md) · [C#](docs/getting-started-csharp.md) · [JavaScript (native)](docs/getting-started-javascript.md) · [WASM](docs/getting-started-wasm.md) · [Dart / Flutter](docs/getting-started-dart.md) · [C FFI](docs/getting-started-c.md).
 
 ## Quick Start
 
@@ -448,4 +456,4 @@ cargo build && cargo test && cargo fmt && cargo clippy -- -D warnings
 
 ---
 
-**Rust** + **Python** + **Go** + **JS/TS** + **C#** + **WASM** + **CLI** + **MCP** | MIT/Apache-2.0 | 100% pass rate on valid Office files (6,062-file corpus) | Up to 100× faster than alternatives | 6 formats
+**Rust** + **Python** + **Go** + **JS/TS** + **C#** + **Dart** + **WASM** + **CLI** + **MCP** | MIT/Apache-2.0 | 100% pass rate on valid Office files (6,062-file corpus) | Up to 100× faster than alternatives | 6 formats

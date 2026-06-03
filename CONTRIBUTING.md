@@ -46,6 +46,8 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
   uv tool install maturin
   ```
 
+- **Flutter / Dart SDK**: For the `dart/` binding (`dart test`, `dart analyze`)
+
 - **pre-commit**: Git hooks
   ```bash
   pip install pre-commit
@@ -110,6 +112,7 @@ office_oxide/
 ├── js/                    # Node.js native bindings (koffi)
 ├── wasm-pkg/              # WASM npm package config
 ├── csharp/                # C# / .NET bindings (P/Invoke)
+├── dart/                  # Dart / Flutter FFI (office_oxide_ffi)
 ├── include/               # C header: office_oxide_c/office_oxide.h
 └── docs/                  # Architecture, per-language getting-started guides
 ```

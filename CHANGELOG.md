@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Dart / Flutter FFI binding** (`dart/`, package `office_oxide_ffi`): read-only
+  `OfficeDocument` API (`fromBytes`, `plainText`, `toMarkdown`, `toHtml`) over the
+  existing C FFI; desktop via Release `native-*` assets or `OFFICE_OXIDE_LIB`;
+  Android via Release `native-android` (+ per-ABI tarballs) + `jniLibs`; `dart run tool/install.dart`
+  for native setup; CI jobs `dart` + `build-android-lib` (ci.yml) and `test-dart` +
+  `build-android-native` (release.yml, ABIs: arm64-v8a, armeabi-v7a, x86_64, x86).
+  Docs: `docs/getting-started-dart.md`, `dart/README.md`.
+
 ## [0.1.2] - 2026-05-14
 
 > Round-trip fidelity, IR layout features, embedded fonts, XLSX number formatting, and an O(1) style-lookup perf win.

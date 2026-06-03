@@ -130,12 +130,13 @@ TypeScript definitions ship with the package (`office-oxide/lib/index.d.ts`).
 
 ## Other languages
 
-office_oxide ships the same Rust core through six bindings:
+office_oxide ships the same Rust core through seven bindings:
 
 - **Rust** — `cargo add office_oxide` — see [docs.rs/office_oxide](https://docs.rs/office_oxide)
 - **Python** — `pip install office-oxide` — see [python/README.md](../python/README.md)
 - **Go** — `go get github.com/yfedoseev/office_oxide/go` — see [go/README.md](../go/README.md)
 - **C# / .NET** — `dotnet add package OfficeOxide` — see [csharp/OfficeOxide/README.md](../csharp/OfficeOxide/README.md)
+- **Dart / Flutter** — [dart/](../dart/) — see [dart/README.md](../dart/README.md)
 - **WASM** — `npm install office-oxide-wasm` — see [wasm-pkg/README.md](../wasm-pkg/README.md)
 
 ## Why I built this
