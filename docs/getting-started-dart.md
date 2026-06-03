@@ -85,7 +85,7 @@ Not supported: iOS, Web.
 
 ## Examples
 
-See [`dart/examples/README.md`](../dart/examples/README.md).
+See [`dart/example/README.md`](../dart/example/README.md).
 
 ## Troubleshooting
 

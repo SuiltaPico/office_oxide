@@ -34,7 +34,7 @@ unmodified in CI without external fixture files.
 | Go | [`go/`](go/) |
 | C# / .NET | [`csharp/`](csharp/) |
 | JavaScript (native, koffi) | [`javascript/`](javascript/) |
-| Dart / Flutter (FFI) | [`dart/examples/`](../dart/examples/) |
+| Dart / Flutter (FFI) | [`dart/example/`](../dart/example/) |
 | Raw C FFI | [`c/`](c/) |
 
 ## Running the Rust examples

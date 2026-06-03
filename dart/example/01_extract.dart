@@ -1,7 +1,7 @@
 // Self-contained smoke test (uses test/fixtures/smoke.docx).
 //
 //   dart pub get
-//   dart run examples/01_extract.dart
+//   dart run example/01_extract.dart
 
 import 'dart:io';
 

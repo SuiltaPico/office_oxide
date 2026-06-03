@@ -365,7 +365,7 @@ jobs:
           dart pub get
           dart analyze --fatal-infos
           dart test
-          dart run examples/01_extract.dart
+          dart run example/01_extract.dart
 
   # Test Node native binding (koffi)
   test-node-native:

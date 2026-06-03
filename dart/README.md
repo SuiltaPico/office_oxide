@@ -85,7 +85,7 @@ print(OfficeDocument.libraryVersion()); // linked native library version
 cd dart
 dart pub get   # downloads native lib via build hook (see below)
 dart test
-dart run examples/01_extract.dart
+dart run example/01_extract.dart
 ```
 
 ## Native library (automatic)
@@ -161,7 +161,7 @@ Longer guide: [docs/getting-started-dart.md](https://github.com/SuiltaPico/offic
 | `hook/build.dart` | Release download + native asset bundling |
 | `tool/install.dart` | Manual / offline native install |
 | `android/` | Flutter `ffiPlugin` scaffold |
-| `examples/` | Small runnable demos |
+| `example/` | Small runnable demos |
 
 ## License
 

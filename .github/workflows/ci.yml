@@ -571,7 +571,7 @@ jobs:
         working-directory: dart
         env:
           OFFICE_OXIDE_LIB: ${{ steps.lib.outputs.path }}
-        run: dart run examples/01_extract.dart
+        run: dart run example/01_extract.dart
 
   # WASM build check
   wasm-build:
