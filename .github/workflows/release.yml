@@ -349,7 +349,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
       - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
-      - uses: subosito/flutter-action@e2a2ebd862d9b76376ae95c44f9cdadb02d76a9a # v2.21.0
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
       - run: cargo build --release --lib
@@ -507,12 +507,16 @@ jobs:
               native-macos-aarch64)   echo "darwin-arm64";;
               native-windows-x86_64)  echo "win32-x64";;
               native-windows-aarch64) echo "win32-arm64";;
-              *) echo "$1";;
+              *) return 1;;
             esac
           }
           for dir in native/native-*; do
             base=$(basename "$dir")
-            out="js/prebuilds/$(map_dir "$base")"
+            if ! platform=$(map_dir "$base"); then
+              echo "Skipping non-desktop artifact: $base"
+              continue
+            fi
+            out="js/prebuilds/${platform}"
             mkdir -p "$out"
             # Extract archives and pull only the shared library
             for f in "$dir"/*.tar.gz "$dir"/*.zip; do
@@ -655,12 +659,15 @@ jobs:
               native-macos-aarch64)   echo "osx-arm64";;
               native-windows-x86_64)  echo "win-x64";;
               native-windows-aarch64) echo "win-arm64";;
-              *) echo "$1";;
+              *) return 1;;
             esac
           }
           for dir in native/native-*; do
             base=$(basename "$dir")
-            rid=$(map_rid "$base")
+            if ! rid=$(map_rid "$base"); then
+              echo "Skipping non-desktop artifact: $base"
+              continue
+            fi
             out="csharp/OfficeOxide/runtimes/${rid}/native"
             mkdir -p "$out"
             tmp=$(mktemp -d)
@@ -1009,12 +1016,15 @@ jobs:
               native-macos-aarch64)   echo "osx-arm64";;
               native-windows-x86_64)  echo "win-x64";;
               native-windows-aarch64) echo "win-arm64";;
-              *) echo "$1";;
+              *) return 1;;
             esac
           }
           for dir in native/native-*; do
             base=$(basename "$dir")
-            rid=$(map_rid "$base")
+            if ! rid=$(map_rid "$base"); then
+              echo "Skipping non-desktop artifact: $base"
+              continue
+            fi
             out="csharp/OfficeOxide/runtimes/${rid}/native"
             mkdir -p "$out"
             tmp=$(mktemp -d)
