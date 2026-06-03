@@ -13,11 +13,21 @@ Unofficial Dart/Flutter FFI bindings for the [office_oxide](https://github.com/y
 | **Fork (Dart binding maintained here)** | [**github.com/SuiltaPico/office_oxide**](https://github.com/SuiltaPico/office_oxide) | Contains `dart/`; Issues, Releases, and `dart run tool/install.dart` default here |
 | **Upstream** | [github.com/yfedoseev/office_oxide](https://github.com/yfedoseev/office_oxide) | Rust core and other language bindings; Dart changes are intended for upstream PRs |
 
-If this fork has not published `native-*` release assets yet, install from upstream:
+If this fork has not published `native-*` release assets yet, point the hook or
+`install.dart` at upstream: `--repo yfedoseev/office_oxide --version 0.1.2`.
 
-```bash
-dart run tool/install.dart --repo yfedoseev/office_oxide
-```
+## Package layout
+
+| Path | In git | Purpose |
+|------|--------|---------|
+| `lib/` | yes | Dart API + shared release/download logic |
+| `hook/build.dart` | yes | Build hook — **primary** native download |
+| `tool/install.dart` | yes | Manual install fallback only |
+| `native/` | empty (see `native/README.md`) | Optional on-disk desktop prebuilds |
+| `android/` | yes (no `.so`) | Flutter `ffiPlugin` + `jniLibs/` target |
+| `test/fixtures/` | yes | Smoke `.docx` |
+| `examples/` | yes | Two small demos (see `examples/README.md`) |
+| `.dart_tool/` | no | Hook output, analyzer cache |
 
 ## Quick start
 
@@ -51,41 +61,41 @@ try {
 }
 ```
 
-### Native runtime
+### Native runtime (one primary path)
 
-| Platform | How |
-|----------|-----|
-| Windows / Linux / macOS | GitHub Release **`native-*`** → `dart/native/` |
-| Android (Flutter) | Release **`native-android`** (all ABIs) → `android/src/main/jniLibs/` |
-| CI / local dev | `OFFICE_OXIDE_LIB=/path/to/liboffice_oxide.so` |
+1. **`dart pub get`** / **`flutter pub get`** — runs [`hook/build.dart`](hook/build.dart) and downloads the matching GitHub Release **`native-*`** asset ([Dart hooks](https://dart.dev/tools/hooks)).
+2. **`dart run tool/install.dart`** — only if you need offline install, all Android ABIs at once, or a different `--repo` / `--version`.
+3. **`OFFICE_OXIDE_LIB`** — CI or local Rust `cargo build --release --lib`.
+
+Configure the hook in `pubspec.yaml` → `hooks.user_defines.office_oxide_ffi` (`release_repo`, `release_tag`, optional `local_lib`, `skip_download`). Default fork tag: **`v0.1.2-dart.1`**.
 
 ```bash
 cd dart
+dart pub get
+dart test
+```
+
+Manual fallback (see [`tool/README.md`](tool/README.md)):
+
+```bash
 dart run tool/install.dart
-# default: SuiltaPico/office_oxide releases
-dart run tool/install.dart --repo yfedoseev/office_oxide   # upstream releases
-dart run tool/install.dart --platform android              # all ABIs for Flutter
-dart run tool/install.dart --platform android --abi arm64-v8a   # single ABI
+dart run tool/install.dart --repo yfedoseev/office_oxide --version 0.1.2
+dart run tool/install.dart --platform android              # all ABIs → jniLibs/
+dart run tool/install.dart --platform android --abi arm64-v8a
 ```
 
-Optional environment variable:
+Use Release assets named **`native-*`**, not `office_oxide-windows-*.zip` (CLI-only).
 
-```bash
-export OFFICE_OXIDE_RELEASE_REPO=SuiltaPico/office_oxide
-```
+### Supported platforms (after Release)
 
-Do **not** use `office_oxide-windows-*.zip` (CLI-only). Use **`native-windows-x86_64.zip`** etc.
+| Target | Architectures |
+|--------|----------------|
+| Linux | x64, arm64 |
+| macOS | x64, arm64 |
+| Windows | x64, arm64 |
+| Android (Flutter) | arm64-v8a, armeabi-v7a, x86_64, x86 |
 
-### Android
-
-```bash
-cd dart
-dart run tool/install.dart --platform android
-```
-
-Downloads **`native-android.tar.gz`** (all ABIs: `arm64-v8a`, `armeabi-v7a`,
-`x86_64`, `x86`) into `android/src/main/jniLibs/`. Pass `--abi <name>` for a
-single ABI tarball. `ffiPlugin: true` bundles `jniLibs` in Flutter apps.
+Not supported: iOS, Web (use WASM bindings elsewhere).
 
 ## API
 
@@ -103,8 +113,7 @@ Formats: `docx`, `xlsx`, `pptx`, `doc`, `xls`, `ppt` via `OfficeFormat`.
 
 ```bash
 cd dart
-dart pub get
-dart run tool/install.dart
+dart pub get   # hook downloads native lib (or use install.dart / OFFICE_OXIDE_LIB)
 dart test
 dart run examples/01_extract.dart
 dart run examples/extract.dart path/to/report.docx
@@ -120,8 +129,9 @@ dart run examples/extract.dart path/to/report.docx
 
 | Issue | Fix |
 |-------|-----|
-| `native library not found` | `dart run tool/install.dart` or set `OFFICE_OXIDE_LIB` |
-| Fork has no Release | `dart run tool/install.dart --repo yfedoseev/office_oxide` |
+| `native library not found` | `dart pub get` (hook), `dart run tool/install.dart`, or `OFFICE_OXIDE_LIB` |
+| Fork has no Release yet | `dart run tool/install.dart --repo yfedoseev/office_oxide` or publish tag `v0.1.2-dart.1` |
+| Hook download failed | Check `release_tag` in `pubspec.yaml` `hooks.user_defines` matches a GitHub Release |
 | Android `dlopen` failed | `dart run tool/install.dart --platform android`, rebuild the Flutter app |
 | Wrong zip | Use **`native-*`**, not CLI bundles |
 

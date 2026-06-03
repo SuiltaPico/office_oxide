@@ -1,0 +1,14 @@
+# Build / cache (never publish)
+.dart_tool/
+build/
+
+# Downloaded natives (hook or install.dart; not in git)
+native/**/lib/
+native/**/include/
+android/src/main/jniLibs/
+
+# Lockfile is resolved by consumers
+pubspec.lock
+
+# Local-only
+**/.DS_Store

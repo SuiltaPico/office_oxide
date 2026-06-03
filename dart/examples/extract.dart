@@ -1,7 +1,6 @@
-// Classic example: extract plain text and Markdown from a file.
+// Extract plain text and Markdown from a file path.
 //
 //   dart pub get
-//   dart/tool/download_native.ps1   # desktop only
 //   dart run examples/extract.dart path/to/file.docx
 
 import 'dart:io';

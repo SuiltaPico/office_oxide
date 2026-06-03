@@ -2,9 +2,7 @@
 build/
 pubspec.lock
 
-# Prebuilt native libs (use tool/download_native.* or tool/install.dart)
+# Prebuilt natives (build hook cache is under .dart_tool/; manual install below)
 native/**/lib/
 native/**/include/
-
-# Android .so from Release native-android* (dart run tool/install.dart --platform android)
 android/src/main/jniLibs/

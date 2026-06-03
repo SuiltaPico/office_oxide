@@ -1,6 +1,6 @@
 # Getting Started with office_oxide (Dart / Flutter)
 
-Dart and Flutter apps can call the same [C FFI](../include/office_oxide_c/office_oxide.h) surface as Go, C#, and Node.js (koffi). The binding lives in [`dart/`](../dart/) as package **`office_oxide_ffi`**.
+Dart and Flutter apps call the same [C FFI](../include/office_oxide_c/office_oxide.h) as Go, C#, and Node.js (koffi). The binding lives in [`dart/`](../dart/) as package **`office_oxide_ffi`**.
 
 > Unofficial Dart/Flutter binding; not affiliated with Office Oxide or Oxide (oxide.fyi).
 
@@ -11,11 +11,7 @@ Dart and Flutter apps can call the same [C FFI](../include/office_oxide_c/office
 | **Fork (Dart binding maintained here)** | https://github.com/SuiltaPico/office_oxide |
 | **Upstream (Rust core)** | https://github.com/yfedoseev/office_oxide |
 
-Report Dart-specific issues on the fork; core parsing bugs may belong upstream.
-
 ## Installation
-
-### From the fork (recommended for consumers)
 
 ```yaml
 dependencies:
@@ -26,46 +22,33 @@ dependencies:
       ref: main
 ```
 
-### Monorepo / local path
+Requires **Dart SDK ≥ 3.10** (build hooks).
 
-```yaml
-dependencies:
-  office_oxide_ffi:
-    path: ../dart
+### Native library
+
+```bash
+cd dart && dart pub get
 ```
 
-### Native runtime
+That runs the package build hook and downloads the correct **`native-*`** prebuilt for your host (or Flutter build target). No separate shell scripts.
 
-1. **Desktop / `dart test`** — install script (Release **`native-*`**, not CLI zips):
+**Fallback:** `dart run tool/install.dart` (offline, all Android ABIs, or another Release repo/tag).
 
-   ```bash
-   cd dart && dart run tool/install.dart
-   ```
+**CI / Rust dev:** `OFFICE_OXIDE_LIB=/absolute/path/to/liboffice_oxide.{so,dylib,dll}`.
 
-   Default Release source is the fork:
+If the fork has no Release yet:
 
-   ```bash
-   dart run tool/install.dart
-   # → github.com/SuiltaPico/office_oxide/releases
-   ```
+```bash
+dart run tool/install.dart --repo yfedoseev/office_oxide --version 0.1.2
+```
 
-   If the fork has no `native-*` assets yet, use upstream:
+### Android (Flutter)
 
-   ```bash
-   dart run tool/install.dart --repo yfedoseev/office_oxide
-   ```
+`ffiPlugin: true` — hook downloads per-ABI assets during `flutter pub get` / build. To populate all `jniLibs/` locally:
 
-   Or set **`OFFICE_OXIDE_LIB`** to a built `liboffice_oxide.so` / `.dylib` / `.dll`
-   (same convention as the Node.js binding).
-
-2. **Android** — from GitHub Release **`native-android`** (or per-ABI `native-android-*`):
-
-   ```bash
-   cd dart && dart run tool/install.dart --platform android
-   ```
-
-   Installs `liboffice_oxide.so` for `arm64-v8a`, `armeabi-v7a`, `x86_64`, and
-   `x86` under `dart/android/src/main/jniLibs/`.
+```bash
+cd dart && dart run tool/install.dart --platform android
+```
 
 ## Quickstart
 
@@ -89,30 +72,31 @@ From bytes:
 final doc = OfficeDocument.fromBytes(bytes, OfficeFormat.docx);
 ```
 
-## Flutter
+## Supported platforms
 
-Add the dependency; Android uses the plugin’s `jniLibs`. Desktop Flutter runners still need the matching `dart/native/...` library on disk (same as CLI `dart test`).
+| Target | Architectures |
+|--------|----------------|
+| Linux | x64, arm64 |
+| macOS | x64, arm64 |
+| Windows | x64, arm64 |
+| Android | arm64-v8a, armeabi-v7a, x86_64, x86 |
 
-## Supported formats
-
-`docx`, `xlsx`, `pptx`, `doc`, `xls`, `ppt` — pass the matching `OfficeFormat` when opening from bytes.
+Not supported: iOS, Web.
 
 ## Examples
 
-| Example | Purpose |
-|---------|---------|
-| [`dart/examples/01_extract.dart`](../dart/examples/01_extract.dart) | Self-contained smoke (CI) |
-| [`dart/examples/extract.dart`](../dart/examples/extract.dart) | Classic file-path extract |
+See [`dart/examples/README.md`](../dart/examples/README.md).
 
 ## Troubleshooting
 
 | Error | Fix |
 |-------|-----|
-| `native library not found` | Run `dart/tool/download_native.*` for your OS/arch |
-| `liboffice_oxide.so` not found (Android) | `dart run tool/install.dart --platform android` |
-| Wrong zip downloaded | Use **`native-windows-x86_64`**, not `office_oxide-windows-x86_64` (CLI only) |
+| `native library not found` | `dart pub get` (hook), then `dart run tool/install.dart`, or `OFFICE_OXIDE_LIB` |
+| Hook download 404 | Publish fork Release tag `v0.1.2-dart.1` or use upstream `install.dart --repo yfedoseev/office_oxide` |
+| Android `dlopen` failed | `dart run tool/install.dart --platform android`, rebuild the app |
+| Wrong zip | Use **`native-*`**, not CLI `office_oxide-windows-*` bundles |
 
 ## See also
 
-- [C FFI](getting-started-c.md)
 - [dart/README.md](../dart/README.md)
+- [C FFI](getting-started-c.md)

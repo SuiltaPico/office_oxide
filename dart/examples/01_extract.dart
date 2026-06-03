@@ -1,5 +1,6 @@
-// Self-contained smoke test (no CLI file argument).
+// Self-contained smoke test (uses test/fixtures/smoke.docx).
 //
+//   dart pub get
 //   dart run examples/01_extract.dart
 
 import 'dart:io';

@@ -353,6 +353,10 @@ jobs:
         with:
           channel: stable
       - run: cargo build --release --lib
+      - name: Stage cdylib for Dart build hook
+        run: |
+          mkdir -p dart/native/linux/x64/lib
+          cp target/release/liboffice_oxide.so dart/native/linux/x64/lib/
       - name: Dart test
         working-directory: dart
         env:

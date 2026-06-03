@@ -529,6 +529,30 @@ jobs:
             Windows) echo "path=${{ github.workspace }}/target/release/office_oxide.dll" >> "$GITHUB_OUTPUT";;
           esac
 
+      - name: Stage cdylib for Dart build hook
+        shell: bash
+        run: |
+          case "${{ runner.os }}" in
+            Linux)
+              dest=dart/native/linux/x64/lib
+              mkdir -p "$dest"
+              cp target/release/liboffice_oxide.so "$dest/"
+              ;;
+            macOS)
+              arch=$(uname -m)
+              folder=x64
+              if [ "$arch" = "arm64" ]; then folder=arm64; fi
+              dest="dart/native/macos/${folder}/lib"
+              mkdir -p "$dest"
+              cp target/release/liboffice_oxide.dylib "$dest/"
+              ;;
+            Windows)
+              dest=dart/native/windows/x64/lib
+              mkdir -p "$dest"
+              cp target/release/office_oxide.dll "$dest/"
+              ;;
+          esac
+
       - name: Dart pub get
         working-directory: dart
         run: dart pub get

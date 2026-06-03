@@ -9,13 +9,23 @@ repository: https://github.com/SuiltaPico/office_oxide/tree/main/dart
 issue_tracker: https://github.com/SuiltaPico/office_oxide/issues
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.10.0
   flutter: ">=3.16.0"
 
+# Build hook: download GitHub Release `native-*` assets on pub get / test / build.
+# See https://dart.dev/tools/hooks
+hooks:
+  user_defines:
+    office_oxide_ffi:
+      release_repo: SuiltaPico/office_oxide
+      release_tag: 0.1.2-dart.1
+
 dependencies:
+  code_assets: ^1.2.1
   ffi: ^2.1.4
   flutter:
     sdk: flutter
+  hooks: ^2.0.2
   path: ^1.9.1
 
 dev_dependencies:
