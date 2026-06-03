@@ -5,8 +5,8 @@ const String defaultReleaseRepo = 'SuiltaPico/office_oxide';
 
 /// Default release tag for Dart/Flutter prebuilds (`v` prefix added in URLs).
 ///
-/// Publish with: `git tag v0.1.2-dart.1 && git push origin v0.1.2-dart.1`
-const String defaultReleaseTag = '0.1.2-dart.1';
+/// Must match [Cargo.toml] / Git tag `v0.1.2` (see `.github/workflows/release.yml`).
+const String defaultReleaseTag = '0.1.2';
 
 /// GitHub archive base name (without extension), e.g. `native-linux-x86_64`.
 String nativeAssetBaseName({

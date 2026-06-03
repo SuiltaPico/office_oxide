@@ -92,7 +92,7 @@ See [`dart/examples/README.md`](../dart/examples/README.md).
 | Error | Fix |
 |-------|-----|
 | `native library not found` | `dart pub get` (hook), then `dart run tool/install.dart`, or `OFFICE_OXIDE_LIB` |
-| Hook download 404 | Publish fork Release tag `v0.1.2-dart.1` or use upstream `install.dart --repo yfedoseev/office_oxide` |
+| Hook download 404 | Push tag **`v0.1.2`** (runs Release workflow) or use upstream `install.dart --repo yfedoseev/office_oxide` |
 | Android `dlopen` failed | `dart run tool/install.dart --platform android`, rebuild the app |
 | Wrong zip | Use **`native-*`**, not CLI `office_oxide-windows-*` bundles |
 

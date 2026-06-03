@@ -18,7 +18,7 @@ hooks:
   user_defines:
     office_oxide_ffi:
       release_repo: SuiltaPico/office_oxide
-      release_tag: 0.1.2-dart.1
+      release_tag: 0.1.2
 
 dependencies:
   code_assets: ^1.2.1

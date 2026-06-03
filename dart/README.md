@@ -67,7 +67,7 @@ try {
 2. **`dart run tool/install.dart`** — only if you need offline install, all Android ABIs at once, or a different `--repo` / `--version`.
 3. **`OFFICE_OXIDE_LIB`** — CI or local Rust `cargo build --release --lib`.
 
-Configure the hook in `pubspec.yaml` → `hooks.user_defines.office_oxide_ffi` (`release_repo`, `release_tag`, optional `local_lib`, `skip_download`). Default fork tag: **`v0.1.2-dart.1`**.
+Configure the hook in `pubspec.yaml` → `hooks.user_defines.office_oxide_ffi` (`release_repo`, `release_tag`, optional `local_lib`, `skip_download`). Default tag: **`v0.1.2`** (same as `Cargo.toml` / Release workflow).
 
 ```bash
 cd dart
@@ -130,7 +130,7 @@ dart run examples/extract.dart path/to/report.docx
 | Issue | Fix |
 |-------|-----|
 | `native library not found` | `dart pub get` (hook), `dart run tool/install.dart`, or `OFFICE_OXIDE_LIB` |
-| Fork has no Release yet | `dart run tool/install.dart --repo yfedoseev/office_oxide` or publish tag `v0.1.2-dart.1` |
+| Fork has no Release yet | `dart run tool/install.dart --repo yfedoseev/office_oxide` or push tag **`v0.1.2`** on `main` |
 | Hook download failed | Check `release_tag` in `pubspec.yaml` `hooks.user_defines` matches a GitHub Release |
 | Android `dlopen` failed | `dart run tool/install.dart --platform android`, rebuild the Flutter app |
 | Wrong zip | Use **`native-*`**, not CLI bundles |
