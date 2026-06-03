@@ -1,8 +1,10 @@
 name: office_oxide_ffi
 description: >
-  Unofficial Dart/Flutter FFI bindings for the office_oxide Rust library.
+  Fast Dart/Flutter FFI for Word, Excel, and PowerPoint: DOCX, XLSX, PPTX plus
+  legacy DOC, XLS, PPT. Extract plain text, Markdown, or HTML via a Rust core.
   Not affiliated with Office Oxide or Oxide (oxide.fyi).
 version: 0.1.2
+license: MIT OR Apache-2.0
 # Maintained in fork https://github.com/SuiltaPico/office_oxide (upstream: yfedoseev/office_oxide).
 homepage: https://github.com/SuiltaPico/office_oxide
 repository: https://github.com/SuiltaPico/office_oxide/tree/main/dart
