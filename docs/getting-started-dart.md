@@ -74,6 +74,8 @@ final doc = OfficeDocument.fromBytes(bytes, OfficeFormat.docx);
 
 ## Supported platforms
 
+Flutter plugin platforms in `pubspec.yaml`: **android**, **linux**, **macos**, **windows** (`ffiPlugin: true`). Not registered: **ios**, **web**.
+
 | Target | Architectures |
 |--------|----------------|
 | Linux | x64, arm64 |

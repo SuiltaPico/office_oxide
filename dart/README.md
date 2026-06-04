@@ -32,15 +32,24 @@ The underlying [office_oxide](https://github.com/yfedoseev/office_oxide) library
 
 - **Fast** — Rust core, no JVM, no external `antiword`/`catdoc` binaries at runtime  
 - **Reliable** — tuned for real-world Office files (upstream reports near-100% success on *valid* inputs in benchmark corpora)  
-- **Flutter-ready** — Android `ffiPlugin`; desktop via prebuilt `native-*` Release assets  
+- **Flutter-ready** — `ffiPlugin` on Android, Linux, macOS, Windows; native libs via build hook (`native-*` Release assets)  
+
+## Versioning
+
+| office_oxide (Rust / Git tag) | `office_oxide_ffi` (pub) |
+|-------------------------------|---------------------------|
+| v0.1.2                        | 0.1.2 (initial)           |
+| v0.1.2                        | **0.1.2+1** (Flutter platform registration patch) |
+
+`release_tag` in hooks stays **`0.1.2`** — only the Dart package version uses `+1`.
 
 ## Install
 
-**pub.dev** (after publish):
+**pub.dev**:
 
 ```yaml
 dependencies:
-  office_oxide_ffi: ^0.1.2
+  office_oxide_ffi: ^0.1.2   # resolves to 0.1.2+1 when published
 ```
 
 **Git** (fork with Dart binding + Releases):
@@ -115,14 +124,16 @@ Use Release assets named **`native-*`**, not CLI-only `office_oxide-windows-*.zi
 
 ### Supported platforms
 
-| Target | Architectures |
-|--------|----------------|
-| Linux | x64, arm64 |
-| macOS | x64, arm64 |
-| Windows | x64, arm64 |
-| Android (Flutter) | arm64-v8a, armeabi-v7a, x86_64, x86 |
+Registered in `pubspec.yaml` as Flutter FFI plugins: **Android, Linux, macOS, Windows** (not iOS or Web).
 
-**Not supported here:** iOS, Web (use [WASM](https://www.npmjs.com/package/office-oxide-wasm) in a WebView or backend instead).
+| Target | Architectures | Integration |
+|--------|----------------|-------------|
+| Linux | x64, arm64 | `linux/CMakeLists.txt` bundles prebuilt `.so` + build hook |
+| macOS | x64, arm64 | `macos/` pod stub + build hook |
+| Windows | x64, arm64 | `windows/CMakeLists.txt` bundles prebuilt `.dll` + build hook |
+| Android | arm64-v8a, armeabi-v7a, x86_64, x86 | `android/` `ffiPlugin` + `jniLibs` from hook |
+
+**Not supported:** iOS, Web (use [WASM](https://www.npmjs.com/package/office-oxide-wasm) in a WebView or backend instead).
 
 ## API
 
@@ -160,7 +171,8 @@ Longer guide: [docs/getting-started-dart.md](https://github.com/SuiltaPico/offic
 | `lib/` | Public API + FFI |
 | `hook/build.dart` | Release download + native asset bundling |
 | `tool/install.dart` | Manual / offline native install |
-| `android/` | Flutter `ffiPlugin` scaffold |
+| `android/` | Flutter `ffiPlugin` (Android) |
+| `linux/`, `windows/`, `macos/` | Flutter `ffiPlugin` registration + optional on-disk prebuild bundle |
 | `example/` | Small runnable demos |
 
 ## License
